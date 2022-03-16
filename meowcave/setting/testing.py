@@ -13,3 +13,8 @@ class TestingConfig(DefaultConfig):
     )
 
     SERVER_NAME = '127.0.0.1:5000'
+
+
+class DevelopmentConfig(DefaultConfig):
+    
+    ENV = 'development'
