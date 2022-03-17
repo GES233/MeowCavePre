@@ -1,5 +1,10 @@
-#
-
+# -*- encoding:utf-8 -*-
+"""
+    meowcave/setting/testing.py
+    ----------------
+    
+    应用在开发与测试阶段的配置。
+"""
 from meowcave.setting.default import DefaultConfig
 
 class TestingConfig(DefaultConfig):
@@ -18,3 +23,5 @@ class TestingConfig(DefaultConfig):
 class DevelopmentConfig(DefaultConfig):
     
     ENV = 'development'
+    
+    SERVER_NAME = '127.0.0.1:5000'

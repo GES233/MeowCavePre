@@ -36,4 +36,4 @@ def create_app():
 
 def configure_app(app):
     # 缺省设置的导入
-    config = app.config.from_object('meowcave.setting.default.DefaultConfig')
+    config = app.config.from_object('meowcave.setting.testing.DevelopmentConfig')

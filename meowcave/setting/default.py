@@ -1,6 +1,6 @@
 # -*- encoding:utf-8 -*-
 """
-    configue.py
+    meowcave/setting/default.py
     ----------------
     
     关于应用的配置。
@@ -27,7 +27,7 @@ class DefaultConfig:
     DEBUG = False
     TESTING = False
     
-    # 服务器的地址
+    # 服务器的地址（后面会改）
     SERVER_NAME = '127.0.0.1:5000'
 
     # 数据库设置（使用SQLAlchemy）
@@ -40,7 +40,8 @@ class DefaultConfig:
     # PostgreSQL:
     # SQLALCHEMY_DATABASE_URI = ''
     # sqlite:
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + basedir + '/' + 'meowcave.sqlite'
+    SQLALCHEMY_DATABASE_URI = \
+        'sqlite:///' + os.path.join(basedir, 'meowcave.db')
     
     # 安全相关设置
     # --------
