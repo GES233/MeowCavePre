@@ -11,7 +11,7 @@ import datetime
 from meowcave.extensions import db
 
 class User(db.Model):
-    # __name__ = 'user'
+    __tablename__ = 'user'
     # -- 关于帐号的设置
     # 
     # `uid`：使用者的id，递增的非空整数，主键
@@ -39,10 +39,13 @@ class User(db.Model):
     # `birth`：出生日期
     birth = db.Column(db.DateTime, default=None)
     # `gender`：性别
-    gender = db.Column(db.String(2))
+    gender = db.Column(db.String(2), default=None)
     # `info`：个人简介
     info = db.Column(db.Text(1024),default=None)
     
     
     def __repr__(self):
-        return '<User {}>'.format(self.nickname)   
+        if not self.username:
+            return '<User {}(uid:{})>'.format(self.nickname, self.uid)
+        else:
+            return '<User {}(@{}, uid:{})>'.format(self.nickname, self.username, self.uid)
