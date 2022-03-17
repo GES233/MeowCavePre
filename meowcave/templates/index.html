@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block content %}
+    {% for element in content_list %}
+    <div>
+	    <p><b>{{element.author.name}}</b> 于 {{element.cr_time}}：</p>
+	    <p>{{element.content}}</p>
+    </div>
+    {% endfor %}
+{% endblock %}

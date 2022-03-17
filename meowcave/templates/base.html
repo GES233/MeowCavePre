@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		{% if title %}
+		<title>{{title}} - MeowCave</title>
+		{% else %}
+		<title>MoewCave</title>
+		{% endif %}
+	</head>
+	<body>
+		<p>Hello, {{me.name}}!</p>
+		<hr>
+		{% block content %}{% endblock %}
+	</body>
+</html>

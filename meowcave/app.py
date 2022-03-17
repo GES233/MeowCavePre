@@ -7,7 +7,7 @@
 """
 import os
 
-from flask import Flask
+from flask import Flask, render_template
 
 
 def create_app():
@@ -26,7 +26,7 @@ def create_app():
     
     
     # 路由
-    @app.route('/')# index
+    @app.route('/hello')# index
     def hello():
         return 'Hello, world.'
     
