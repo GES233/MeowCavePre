@@ -32,9 +32,8 @@ class DefaultConfig:
 
     # 数据库设置（使用SQLAlchemy）
     # --------
-    # DATABASE=os.path.join(basedir, 'meowcave.sqlite')
-    # 我不想用sqlite说实话
-    
+    # 地址：
+    # --
     # MySQL:
     # SQLALCHEMY_DATABASE_URI = ''
     # PostgreSQL:
@@ -42,6 +41,8 @@ class DefaultConfig:
     # sqlite:
     SQLALCHEMY_DATABASE_URI = \
         'sqlite:///' + os.path.join(basedir, 'meowcave.db')
+    # 是否向应用发生信号
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
     
     # 安全相关设置
     # --------

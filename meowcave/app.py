@@ -8,9 +8,10 @@
 import os
 
 from flask import Flask
-
+# 导入扩展
 from meowcave.extensions import db, migrate
-
+# 导入应用
+from meowcave.user.models import User
 
 def create_app():
     """
