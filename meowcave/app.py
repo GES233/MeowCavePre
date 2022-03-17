@@ -7,14 +7,16 @@
 """
 import os
 
-from flask import Flask, render_template
+from flask import Flask
+
+from meowcave.extensions import db, migrate
 
 
 def create_app():
     """
         创建应用。
     """
-    app = Flask('meowcave', instance_relative_config=True)
+    app = Flask('meowcave')
     
     
     # 确保`../instance`存在
@@ -23,6 +25,9 @@ def create_app():
     
     
     configure_app(app)
+    
+    
+    configure_extensions(app)
     
     
     # 路由
@@ -35,5 +40,16 @@ def create_app():
 
 
 def configure_app(app):
+    """
+        应用设置。
+    """
     # 缺省设置的导入
     config = app.config.from_object('meowcave.setting.testing.DevelopmentConfig')
+
+
+def configure_extensions(app):
+    """
+        关于插件（`flask_xxx`）的初始化设置。
+    """
+    db.init_app(app)
+    migrate.init_app(app, db)
