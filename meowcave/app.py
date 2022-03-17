@@ -51,5 +51,7 @@ def configure_extensions(app):
     """
         关于插件（`flask_xxx`）的初始化设置。
     """
+    # 等价于`db = SQLAlchemy(app)`
     db.init_app(app)
+    # 等价于`megrate = Megrate(app, db)`
     migrate.init_app(app, db)
