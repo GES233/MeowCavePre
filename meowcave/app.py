@@ -7,13 +7,17 @@
 """
 import os
 
-from flask import Flask, render_template
+from flask import(
+    Flask,
+    render_template,
+    Blueprint
+)
 # 导入扩展
-from meowcave.extensions import db, migrate
+from meowcave.extensions import db, migrate, login_manager
 # 导入模型
 from meowcave.user.models import User
-# 导入视图
-from meowcave.auth.forms import LoginForm
+# 导入蓝图
+from meowcave.blueprint_index import bp_index
 
 def create_app():
     """
@@ -28,26 +32,48 @@ def create_app():
     
     
     configure_app(app)
-    
-    
     configure_extensions(app)
-    
-    
     configure_errorhandlers(app)
+    configure_blueprint(app, blueprint_index=bp_index)
     
     
     # 路由
+    # 其他地方的调用会采用函数名
+    # url_for('index')
     @app.route('/hello')# index
     def hello():
-        return 'Hello, world.'
+        return '<h1>Hello, world.</h1>'
     
-    
-    # Login(Temp)
-    @app.route('/login')
-    def login():
-        form = LoginForm()
-        return render_template('auth/login.html', title='登录', login_form=form)
-    
+    # 来自`/test_code/index-test.py`的测试代码
+    @app.route('/')
+    def index():
+        title = 'Index'
+        me = {'name' : 'rLCpBA'}
+        content_list = [
+            {
+                'author' : {'name' : '粑粑', 'id' : '126'},
+                'cr_time' : '14:03:26',
+                'content' : '吃屎啦你！'
+            },
+            {
+                'author' : {'name' : 'Lemon', 'id' : '239'},
+                'cr_time' : '14:23:57',
+                'content' : '一眼丁真，鉴定为：假'
+            },
+            {
+                'author' : {'name' : '爱国学者张维为', 'id' : '17'},
+                'cr_time' : '14:33:16',
+                'content' : 'nt'
+            },
+            {
+                'author' : {'name' : '12345', 'id' : '12'},
+                'cr_time' : '14:57:00',
+                'content' : 'sb'
+            }
+        ]
+        
+        return render_template('index.html', title='Home', me=me, content_list=content_list)
+
     
     return app
 
@@ -60,6 +86,14 @@ def configure_app(app):
     config = app.config.from_object('meowcave.setting.testing.DevelopmentConfig')
 
 
+def configure_blueprint(app, blueprint_index):
+    """
+        蓝图的设置与初始化。
+    """
+    for _singal_func in blueprint_index:
+        _singal_func(app=app) # 执行函数
+
+
 def configure_extensions(app):
     """
         关于插件（`flask_xxx`）的初始化设置。
@@ -68,6 +102,12 @@ def configure_extensions(app):
     db.init_app(app)
     # 等价于`megrate = Megrate(app, db)`
     migrate.init_app(app, db)
+    # 等价与`login_manager = LoginManager(app)`
+    login_manager.init_app(app)
+    # 参见 https://flask-login.readthedocs.io/en/latest/#how-it-works
+    @login_manager.user_loader
+    def load_user(uid):
+        return User.query.get(int(uid))# `User.query.get()`是按照表的主键查询的
 
 
 def configure_errorhandlers(app):# 对应的模板未完成

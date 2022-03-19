@@ -1,16 +1,27 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		{% if title %}
-		<title>{{title}} - MeowCave</title>
+		<meta charset="utf-8">
+        {% if title %}
+		    <title>{{title}} - MeowCave</title>
 		{% else %}
-		<title>MoewCave</title>
-		{% endif %}
+		    <title>MoewCave</title>
+	    {% endif %}
 	</head>
 	<body>
+		{% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <ul>
+                    {% for message in messages %}
+                        <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
 		{% if me %}
-		<p>Hello, {{me.name}}!</p>
+		    <p>Hello, {{me.name}}!</p>
 		{% endif %}
+		Navigation: <a href={{ url_for('index') }}>Home</a> <a href={{ url_for('hello') }}>Hola</a>
 		<hr>
 		{% block content %}{% endblock %}
 	</body>
