@@ -13,11 +13,26 @@ from flask_login import UserMixin
 from meowcave.extensions import db
 
 class User(db.Model, UserMixin):
+    """
+        Uder
+        --------
+        
+        承载用户模型的类。
+        
+        `UserMixin`是关于用户数据库模型的一个类，
+        其中四个类以及方法是必需的：
+         - `is_authenticated`：布尔值，表示是否登录
+         - `is_active`：布尔值，和「记住我？」有密切联系
+         - `is_anonymous`：布尔值，表示是否是申必人（？）
+         - `get_id`, "given a User instance, 
+         returns the unique ID for that object"
+         (from https://stackoverflow.com/questions/63231163/what-is-the-usermixin-in-flask)
+    """
     __tablename__ = 'user'
     # -- 关于帐号的设置
     # 
-    # `uid`：使用者的id，递增的非空整数，主键
-    uid = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    # `id`：使用者的id，递增的非空整数，主键
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     # `nickname`：昵称，非空字符
     # 考虑到登录的问题，昵称不能重复，用户A的昵称也不能和其他用户的`username`相冲突
     nickname = db.Column(db.String(80), nullable=False, unique=True)
@@ -56,9 +71,9 @@ class User(db.Model, UserMixin):
     # 方法
     def __repr__(self):
         if not self.username:
-            return '<User {}(uid:{})>'.format(self.nickname, self.uid)
+            return '<User {}(uid:{})>'.format(self.nickname, self.id)
         else:
-            return '<User {}(@{}, uid:{})>'.format(self.nickname, self.username, self.uid)
+            return '<User {}(@{}, uid:{})>'.format(self.nickname, self.username, self.id)
     
     
     # 设置密码：

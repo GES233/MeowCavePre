@@ -18,8 +18,8 @@
                 </ul>
             {% endif %}
         {% endwith %}
-		{% if me %}
-		    <p>Hello, {{me.name}}!</p>
+		{% if not current_user.is_anonymous %}
+		    <p>Hello, {{ current_user.nickname }}!</p>
 		{% endif %}
 		Navigation: <a href={{ url_for('index') }}>Home</a> <a href={{ url_for('hello') }}>Hola</a>
 		<hr>

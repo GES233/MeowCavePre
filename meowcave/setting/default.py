@@ -27,7 +27,7 @@ class DefaultConfig:
     # 获取应用在的系用
     platform = sys.platform
 
-    # 关于`Flask`的设置。
+    # 关于Flask的设置。
     # --------
     DEBUG = False
     TESTING = False
@@ -41,21 +41,24 @@ class DefaultConfig:
     # --------
     # 地址：
     # --
+    # 格式：dialect+driver://username:password@host:port/database
     # MySQL:
-    # SQLALCHEMY_DATABASE_URI = ''
+    # SQLALCHEMY_DATABASE_URI = 'mysql+{drive}://' + '?charset=utf8'
     # PostgreSQL:
     # SQLALCHEMY_DATABASE_URI = ''
     # sqlite:
-    # SQLALCHEMY_DATABASE_URI = ''
     SQLALCHEMY_DATABASE_URI = \
-        'sqlite:///' + os.path.join(basedir, 'meowcave.db')
+        'sqlite:///' + os.path.join(basedir, 'meowcave.db') + '?charset=utf8'
     # 是否向应用发生信号
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    # 关于UTF-8编码的设置
+    # 在flask-SQLAlchemy 3.0中可能会被移除
+    SQLALCHEMY_NATIVE_UNICODE = True
     
     
     # 安全相关设置
     # --------
-    # 密钥
-    SECRET_KEY = os.environ.get('SECRET_KEY') or '厕所，粑粑，美汁汁'
+    # 密钥（只能拉丁编码，不然就报错）
+    SECRET_KEY = os.environ.get('SECRET_KEY') or 'from-top-make-drop,thats-some-wet-ass-pussy.'
     
     # 

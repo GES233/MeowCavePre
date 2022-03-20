@@ -37,6 +37,11 @@ def create_app():
     configure_blueprint(app, blueprint_index=bp_index)
     
     
+    # shell环境，主要是数据库环境相关的
+    @app.shell_context_processor
+    def make_shell_context():
+        return {'db': db, 'User': User}
+    
     # 路由
     # 其他地方的调用会采用函数名
     # url_for('index')
@@ -48,7 +53,6 @@ def create_app():
     @app.route('/')
     def index():
         title = 'Index'
-        me = {'name' : 'rLCpBA'}
         content_list = [
             {
                 'author' : {'name' : '粑粑', 'id' : '126'},
@@ -72,7 +76,7 @@ def create_app():
             }
         ]
         
-        return render_template('index.html', title='Home', me=me, content_list=content_list)
+        return render_template('index.html', title='Home', content_list=content_list)
 
     
     return app
@@ -106,8 +110,8 @@ def configure_extensions(app):
     login_manager.init_app(app)
     # 参见 https://flask-login.readthedocs.io/en/latest/#how-it-works
     @login_manager.user_loader
-    def load_user(uid):
-        return User.query.get(int(uid))# `User.query.get()`是按照表的主键查询的
+    def load_user(_id):
+        return User.query.get(int(_id))# `User.query.get()`是按照表的主键查询的
 
 
 def configure_errorhandlers(app):# 对应的模板未完成

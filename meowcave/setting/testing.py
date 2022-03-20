@@ -27,3 +27,6 @@ class DevelopmentConfig(DefaultConfig):
     TESTING = True
     
     SERVER_NAME = '127.0.0.1:5000'
+    
+    # 返回session所对应的SQL语句
+    # SQLALCHEMY_ECHO = True

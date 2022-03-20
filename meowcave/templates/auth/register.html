@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>注册</h1>
+    <form action="" method="post">
+        {{ reg_form.hidden_tag() }}
+        <p>
+            {{ reg_form.nickname.label }}<br>
+            {{ reg_form.nickname(size=32) }}<br>
+            {% for error in reg_form.nickname.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ reg_form.email.label }}<br>
+            {{ reg_form.email(size=64) }}<br>
+            {% for error in reg_form.email.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ reg_form.passwd.label }}<br>
+            {{ reg_form.passwd(size=32) }}<br>
+            {% for error in reg_form.passwd.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ reg_form.confirm_pswd.label }}<br>
+            {{ reg_form.confirm_pswd(size=32) }}<br>
+            {% for error in reg_form.confirm_pswd.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>{{ reg_form.submit() }}</p>
+    </form>
+{% endblock %}

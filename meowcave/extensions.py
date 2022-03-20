@@ -12,7 +12,7 @@ from flask_login import LoginManager
 
 
 # 用`db`来表示数据库
-db = SQLAlchemy()
+db = SQLAlchemy(use_native_unicode='utf8')
 # `migrate`主要设计有关数据库的迁移
 migrate = Migrate()
 # `login_manager`是关于用户登录的内容
