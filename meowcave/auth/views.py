@@ -37,17 +37,25 @@ class Login(MethodView):
         return LoginForm()
     
     
-    def login_failer(self):
-        # 密码错误或查无此人的情况
-        flash('邮件或密码输入错误！')
-        return redirect(url_for('auth.login'))
-    
-    
     def get(self):
         return render_template("auth/login.html", login_form=self.form())
     
     
     def post(self):
+        
+        # 这俩玩意不知道往哪里放了
+        def login_failer():
+            # 密码错误或查无此人的情况
+            flash('邮件或密码输入错误！')
+            return redirect(url_for('auth.login'))
+    
+    
+        def login_success(user):
+            # 为减少代码量用的函数
+            login_user(user, remember=_me)
+            return redirect(url_for('index'))
+        
+        
         if current_user.is_authenticated:# 已经登录的情况
             flash('您已经登录了！')
             return redirect(url_for('index'))
@@ -74,51 +82,42 @@ class Login(MethodView):
             _me = login_form.remember_me.data
             
             
-            def _login_success():
-                # 为减少代码量用的函数
-                login_user(user, remember=_me)
-                return redirect(url_for('index'))
-            
-            
             # 逻辑部分
             if email_addr_valid(_input): # 匹配出是邮件
                 user = User.query.filter_by(email=_input).first()
                 if user is None or not user.passwd_check(pswd):
-                    return self.login_failer()
+                    return login_failer()
                 else:
                     # 通过邮件登录成功
-                    return _login_success()
+                    return login_success(user)
             else: # 不是邮件
                 if not ascii_letter_valid(_input):
                     # 匹配结果显示肯定是昵称
                     user = User.query.filter_by(nickname=_input).first()
                     if user is None or not user.passwd_check(pswd):
-                        return self.login_failer()
+                        return login_failer()
                     else:
-                        return _login_success()
-                        # return redirect(url_for('index'))
-                else:
+                        return login_success(user)
+                else: # 另一种情况
                     # 先查询`username`，这个人肯定少
                     user = User.query.filter_by(username=_input).first()
                     if user:
                         if not user.passwd_check(pswd):
-                            return self.login_failer()
+                            return login_failer()
                         else:
-                            return _login_success()
-                            # return redirect(url_for('index'))
+                            return login_success(user)
                     else: # 再用昵称查找
                         user = User.query.filter_by(nickname=_input).first()
                         if user is None or not user.passwd_check(pswd):
-                            return self.login_failer()
+                            return login_failer()
                         else:
-                            return _login_success()
-                            # return redirect(url_for('index'))
-            
+                            return login_success(user)
+        # 视图函数需要一个返回值
         return render_template("auth/login.html", login_form=login_form)
 
 
 class Logout(MethodView):
-    decorators = [login_required]
+    # decorators = [login_required]
     
     # 需要考虑未登录用户键入登出的情况
     
@@ -175,6 +174,11 @@ class Register(MethodView):
             flash('恭喜您！成为了我们的一员')
             # 接下来是登录逻辑
             # 理论上来讲，可以选择自动跳转，但是我不会
+            '''
+            # 还要考虑「记住我」的问题，就先算了
+            flash('如果不是自己的电脑记得使用结束后登出！')
+            return redirect(url_for('index'))
+            '''
             return redirect(url_for('auth.login'))
         
         return render_template("auth/register.html", reg_form=reg_form)

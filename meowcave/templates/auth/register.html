@@ -13,7 +13,7 @@
         </p>
         <p>
             {{ reg_form.email.label }}<br>
-            {{ reg_form.email(size=64) }}<br>
+            {{ reg_form.email(size=32) }}<br>
             {% for error in reg_form.email.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}

@@ -12,6 +12,7 @@ from flask_login import UserMixin
 
 from meowcave.extensions import db
 
+
 class User(db.Model, UserMixin):
     """
         Uder
@@ -24,9 +25,8 @@ class User(db.Model, UserMixin):
          - `is_authenticated`：布尔值，表示是否登录
          - `is_active`：布尔值，和「记住我？」有密切联系
          - `is_anonymous`：布尔值，表示是否是申必人（？）
-         - `get_id`, "given a User instance, 
-         returns the unique ID for that object"
-         (from https://stackoverflow.com/questions/63231163/what-is-the-usermixin-in-flask)
+         - `get_id`：返回用户的id，必须叫做id
+           (from https://stackoverflow.com/questions/63231163/what-is-the-usermixin-in-flask)
     """
     __tablename__ = 'user'
     # -- 关于帐号的设置
@@ -38,7 +38,7 @@ class User(db.Model, UserMixin):
     nickname = db.Column(db.String(80), nullable=False, unique=True)
     # `username`：纯ASCII字符，可空，不可更改
     username = db.Column(db.String(40), unique=True)
-    # `e-mail`：非空
+    # `email`：电邮地址，非空
     email = db.Column(db.String(120), index=True, nullable=False, unique=True)
     # `passwd`：混淆后的密码（SHA-256）
     passwd = db.Column(db.String(256))
@@ -53,8 +53,11 @@ class User(db.Model, UserMixin):
     # - blocked：被禁用
     # - frozen：被冻结（用户主动）
     user_status = db.Column(db.String, default='normal')
-    # `spectator`：表示该用户是否为旁观者的布尔值
+    # `is_spectator`：表示该用户是否为旁观者的布尔值
     is_spectator = db.Column(db.Boolean, default=False)
+    # `credit`：等级积分
+    # 00000~65535(0000~FFFF)
+    # credit = db.Column(db.Integer, default=32768)
     
     # -- 用户信息
     # 
@@ -68,12 +71,38 @@ class User(db.Model, UserMixin):
     website = db.Column(db.String(1256), default=None)
     
     
+    # -- 和别的表的关系
+    '''# 邀请码表
+    """
+        先声明下关系，一个用户只能被一个邀请码所邀请，
+        但是一个用户也可以邀请多个用户，也就是说，
+        对任意用户而言，当他为「受邀者」时，
+        仅存在一个对应的邀请码，也仅存在一个邀请者；
+        但是当他为「邀请者」时，
+        会有多个邀请码以及多个受邀者。
+        ----
+        简而言之，就是树形的结构。
+        
+        user.as_host:code => 1:n
+        user.as_guest:code => 1:1
+    """
+    invitation_code = db.relationship(
+        'InvitationCode', # 先把`InvitationCode`库链接过来
+        # 照葫芦画瓢。
+        #primaryjion=(invitation_code.c.host_id == id),
+        #secondaryjion=(invitation_code.c.guest_id == id),
+        #backref='user',
+        #lazy='dymanic'
+    )'''
+    
+    
     # 方法
+    # 返回值：
     def __repr__(self):
         if not self.username:
-            return '<User {}(uid:{})>'.format(self.nickname, self.id)
+            return '<User {}(id:{})>'.format(self.nickname, self.id)
         else:
-            return '<User {}(@{}, uid:{})>'.format(self.nickname, self.username, self.id)
+            return '<User {}(@{}, id:{})>'.format(self.nickname, self.username, self.id)
     
     
     # 设置密码：
@@ -88,8 +117,59 @@ class User(db.Model, UserMixin):
         return check_password_hash(self.passwd, password)
 
 '''
-class SocialConnection(db.Model):
+class InvitationCode(db.Model):
     """
-       特指关注等的社交行为与社交关系。
+       InvitationCode
+       --------
+       
+       存储以及显示邀请码以及基于邀请而建立的联系的数据库。
     """
-    pass'''
+    __tablename__ = 'invitation_code'
+    
+    # `code`：邀请码文本
+    code = db.Column(db.String(40),  primary_key=True, unique=True)
+    
+    # -- 关于邀请者以及基本信息
+    # 邀请人
+    host = db.relationship('User')
+    # 邀请人的id
+    host_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    # `rest_step`：剩余次数，0就是无效
+    rest_step = db.Column(db.Integer, default=1)
+    
+    # -- 时间与有效相关
+    # `generate_time`：生成时间
+    generate_time = db.Column(db.DateTime, default=datetime.utcnow())
+    # `end_time`：作废日期
+    invalid_time = db.Coulmn(db.DateTime)
+    
+    # -- 关于受邀者
+    # 受邀者
+    guest = db.relationship('User')
+    # 受邀者的id（如果有的话）
+    guest_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
+    
+    
+    # 一些函数以及方法
+    # 返回值：
+    def __repr__(self):
+        if self.guest:
+            return '<Code:"{}", {} -> {}>'.format(code, self.host_id, self.guest_id)
+        else:
+            return '<Code:"{}", {} -> Null>'.format(code, self.host_id)
+    
+    
+    # 生成邀请码：
+    def generate(self):
+        pass
+    
+    
+    # 邀请用户：
+    def guest_invited(self):
+        pass
+    
+    
+    # 邀请码作废：
+    def code_invalid(self):
+        pass
+'''

@@ -1,27 +1,35 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<meta charset="utf-8">
-        {% if title %}
-		    <title>{{title}} - MeowCave</title>
-		{% else %}
-		    <title>MoewCave</title>
+	    <meta charset="utf-8">
+            {% if title %}
+	        <title>{{title}} - MeowCave</title>
+	    {% else %}
+	        <title>MoewCave</title>
 	    {% endif %}
 	</head>
 	<body>
-		{% with messages = get_flashed_messages() %}
+	    {% with messages = get_flashed_messages() %}
             {% if messages %}
                 <ul>
+		    消息：
                     {% for message in messages %}
                         <li>{{ message }}</li>
                     {% endfor %}
+		    <hr>
                 </ul>
             {% endif %}
         {% endwith %}
 		{% if not current_user.is_anonymous %}
-		    <p>Hello, {{ current_user.nickname }}!</p>
+	            <p>你好， {{ current_user.nickname }}！</p>
+		    <a href={{ url_for('auth.log_out') }}>登出</a>
+		{% else %}
+		    <a href={{ url_for('auth.login') }}>登录</a>
+		    不是MeowCave中的一员？那就<a href={{ url_for('auth.register') }}>注册</a>
 		{% endif %}
-		Navigation: <a href={{ url_for('index') }}>Home</a> <a href={{ url_for('hello') }}>Hola</a>
+		<br />
+		导航：<a href={{ url_for('index') }}>首页</a>
+		<a href={{ url_for('hello') }}>唯一可以一直正常访问的页面</a>
 		<hr>
 		{% block content %}{% endblock %}
 	</body>

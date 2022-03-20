@@ -44,7 +44,7 @@ def create_app():
     
     # 路由
     # 其他地方的调用会采用函数名
-    # url_for('index')
+    # url_for('hello')
     @app.route('/hello')# index
     def hello():
         return '<h1>Hello, world.</h1>'
