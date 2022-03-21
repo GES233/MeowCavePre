@@ -42,18 +42,16 @@ class Login(MethodView):
     
     
     def post(self):
-        
-        # 这俩玩意不知道往哪里放了
         def login_failer():
             # 密码错误或查无此人的情况
-            flash('邮件或密码输入错误！')
+            flash('昵称/邮件或密码输入错误！')
             return redirect(url_for('auth.login'))
     
     
         def login_success(user):
             # 为减少代码量用的函数
             login_user(user, remember=_me)
-            return redirect(url_for('index'))
+            return redirect(url_for('index')) # 可能后期回加入会转到特定链接的功能
         
         
         if current_user.is_authenticated:# 已经登录的情况
@@ -68,12 +66,15 @@ class Login(MethodView):
             # 也可能需要对用户身份判定的部分内容
             """
             关于用户登录表单的`username`的流程：
-            邮件 优先于 username 优先于 昵称（）
+            邮件优先于用户名优先于昵称————
+            
             邮件用'user@example.com'为过滤正则式，
             如果有结果那么通过邮件查询用户；
             首先通过「不是」纯ASCII字符来确定属于昵称；
-            然后通过 username 查询，
-            如果没有反馈再通过昵称。
+            然后通过用户名查询，
+            如果没有反馈再通过昵称查询。
+            
+            如果存在用户但是密码错误直接跳转，如果没有用户再一轮下来。
             """
             
             # 初始的一些量
