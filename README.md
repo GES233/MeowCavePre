@@ -7,7 +7,7 @@ _No English version because of my poor vocabulary, sorry._
 学习建设一个基于`Flask`的轻论坛的过程。
 
 主要参考的是[新版The Flask Mega-Tutorial教程](https://github.com/luhuisicnu/The-Flask-Mega-Tutorial-zh)，
-代码~~剽窃~~借鉴了[flaskbb](github/com/flaskbb/flaskbb)、[university-bbs](github.com/weijiang1994/university-bbs/)代码。
+代码~~剽窃~~借鉴了[flaskbb](https://github/com/flaskbb/flaskbb)、[university-bbs](https://github.com/weijiang1994/university-bbs/)代码。
 在此非常感谢他们的付出以让我们得到了参考。
 
 ### 代码结构
@@ -34,7 +34,7 @@ _No English version because of my poor vocabulary, sorry._
 
 - [x] 用户的注册
 - [x] 用户的登录与登出
-- [x] 发帖（在`UserPost`下）
+- [x] 发帖（在`UserPost`下，单纯的「动态」）
 
 短期内期望的功能：
 
@@ -42,16 +42,18 @@ _No English version because of my poor vocabulary, sorry._
 - [ ] 邀请码的生成
   - [ ] 增加后台的第一个功能————**邀请码的相关设定**
 - [ ] 用户个人信息的修改
+- [ ] 进一步精简代码以及合理化项目结构
 
 长期规划（`MeowCave`的内容）：
 
-- Markdown
+- Markdown的引入
 - 评论系统
 - 像样的后台
 - 建立与个人动态相独立的「圈子-板块-贴子-楼」的内容结构
   - 内容的组织
   - 圈子的*管理员*————上任机制与权力
 - 多媒体内容（图片、音频以及视频等）在网站上的引入
+- 用户生产内容的版权声明以及「演绎」
 
 正式部署相关（广义的）：
 
