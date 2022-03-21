@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>个人主页</h1>
+    <h2>信息</h2>
+    <div>
+        <p>昵称：{{ user.nickname }}</p>
+        <p>（UID：{{ user.id }}）</p>
+    </div>
+    <div>
+        <p>于{{ user.jion_time }}加入</p>
+    </div>
+    <hr>
+    <h2>动态</h2>
+    {% if content_list %}
+    {% for element in content_list %}
+        <div>
+            <p><b>{{user.nickname}}</b> 于 {{element.create_time}}：</p>
+            <p>{{element.content}}</p>
+        </div>
+    {% endfor %}
+    {% endif %}
+    {% if current_user.id == user.id %}
+        <form action="" method="post">
+            {{ form.hidden_tag() }}
+            <p>
+                {{ form.post.label }}<br>
+                {{ form.post(cols=32, rows=4) }}<br>
+                {% for error in form.post.errors %}
+                    <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+            </p>
+            <p>{{ form.submit_post() }}</p>
+        </form>
+    {% endif %}
+{% endblock %}

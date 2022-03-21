@@ -166,7 +166,7 @@ class UserPost(db.Model):
     # `content`：内容
     content = db.Column(db.Text(100))
     # `create_time`：发布的时间戳
-    create_time = db.Column(db.DateTime, default=datetime.utcnow)
+    create_time = db.Column(db.DateTime, default=datetime.utcnow())
     
     # 方法：
     def __repr__(self):

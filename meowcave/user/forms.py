@@ -13,6 +13,7 @@ from wtforms import (
     StringField,
     SubmitField
 )
+from wtforms.validators import DataRequired, Length
 
 from meowcave.user.models import User, UserPost
 
@@ -26,11 +27,11 @@ class UserPostForm(FlaskForm):
     post = TextAreaField(
         '写点啥...',
         validators=[
-            DataRequired(),
+            DataRequired('不能发空动态哟～'),
             Length(min=1, max=100)
         ]
     )
-    submit = SubmitField('PO 上 網 ！')
+    submit_post = SubmitField('PO 上 網 ！')
 
 
 class UserProfileModification(FlaskForm):
