@@ -3,7 +3,7 @@
     app.py
     ----------------
     
-    应用与关于应用的配置设置。
+    应用工厂与初始化配置。
 """
 import os
 
@@ -26,7 +26,7 @@ def create_app():
     app = Flask('meowcave')
     
     
-    # 确保`../instance`存在
+    # 确保`../instance`存在，虽然不知道是干嘛的
     if not os.path.exists(app.instance_path):
         os.makedirs(app.instance_path)
     
@@ -54,9 +54,10 @@ def create_app():
         return '<h1>Hello, world.</h1>'
     
     # 来自`/test_code/index-test.py`的测试代码
+    @app.route('/index')
     @app.route('/')
     def index():
-        title = 'Index'
+        title = '首页'
         content_list = [
             {
                 'author' : {'name' : 'abab', 'id' : '126'},
@@ -91,7 +92,7 @@ def configure_app(app):
         应用设置。
     """
     # 缺省设置的导入
-    config = app.config.from_object('meowcave.setting.testing.DevelopmentConfig')
+    config = app.config.from_object('meowcave.setting.testing.DevelopmentConfig')# 不知道为啥运行后shell依旧为production
 
 
 def configure_blueprint(app, blueprint_index):
@@ -114,8 +115,8 @@ def configure_extensions(app):
     login_manager.init_app(app)
     # 参见 https://flask-login.readthedocs.io/en/latest/#how-it-works
     @login_manager.user_loader
-    def load_user(_id):
-        return User.query.get(int(_id))# `User.query.get()`是按照表的主键查询的
+    def load_user(id):
+        return User.query.get(int(id))# `User.query.get()`是按照表的主键查询的
 
 
 def configure_errorhandlers(app):# 对应的模板未完成
