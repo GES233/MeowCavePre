@@ -1,6 +1,6 @@
 # MoewCave
 
-_No English version because my poor vocabulary, sorry._
+_No English version because of my poor vocabulary, sorry._
 
 ## 关于项目
 
@@ -25,7 +25,7 @@ _No English version because my poor vocabulary, sorry._
 - `models.py`：存放其他地方会用到的模型
 - `view.py`：视图函数，和`template`下的内容对接，其中蓝图在此注册
 
-### 功能
+### 功能与期望
 
 因为主要目的是学习而非搭建完整可用的项目，所以显的相当简陋。
 如果存在问题，还敬请指出。
@@ -48,7 +48,7 @@ _No English version because my poor vocabulary, sorry._
 - Markdown
 - 评论系统
 - 像样的后台
-- 建立与个人动态相独立的「圈子-板块-贴子-楼」的组织结构
+- 建立与个人动态相独立的「圈子-板块-贴子-楼」的内容结构
   - 内容的组织
   - 圈子的*管理员*————上任机制与权力
 - 多媒体内容（图片、音频以及视频等）在网站上的引入
@@ -58,3 +58,42 @@ _No English version because my poor vocabulary, sorry._
 - MySQL
 - 网络安全相关
 - 前后端分离与API接口
+
+## 运行项目
+
+代码很烂，凑合者看。
+
+下载下来，然后：
+
+```
+$ cd <File-location> # 使bash到达项目的位置
+```
+
+如果没有安装`virtualenv`（安装后跳过即可）：
+
+```
+$ pip install virtualenv
+```
+
+开一个虚拟环境：
+
+```
+$ virtualenv vvrenv # 后面的名字随便起，你甚至可以叫它为 ilovebingchiling
+```
+
+在进行一些简单的设定：
+
+```
+$ pip install -r requirements.txt
+...
+$ export FLASK_APP=meowcave
+$ export FLASK_ENV=development # 不会有人用production来运行这玩意吧？不会吧
+```
+
+开始运行
+
+```
+flask run
+```
+
+~~然后疯狂报错~~
