@@ -59,24 +59,24 @@ def create_app():
         title = 'Index'
         content_list = [
             {
-                'author' : {'name' : '粑粑', 'id' : '126'},
+                'author' : {'name' : 'abab', 'id' : '126'},
                 'cr_time' : '14:03:26',
-                'content' : '吃屎啦你！'
+                'content' : 'Test, test, 123.'
             },
             {
                 'author' : {'name' : 'Lemon', 'id' : '239'},
                 'cr_time' : '14:23:57',
-                'content' : '一眼丁真，鉴定为：假'
+                'content' : '寄了'
             },
             {
                 'author' : {'name' : '爱国学者张维为', 'id' : '17'},
                 'cr_time' : '14:33:16',
-                'content' : 'nt'
+                'content' : '根据 Champain 不等式子...'
             },
             {
-                'author' : {'name' : '12345', 'id' : '12'},
+                'author' : {'name' : '孙咲川', 'id' : '12'},
                 'cr_time' : '14:57:00',
-                'content' : 'sb'
+                'content' : '傻宝'
             }
         ]
         
