@@ -1,4 +1,4 @@
-# MoewCave
+# MoewCavePre
 
 _No English version because of my poor vocabulary, sorry._
 
@@ -6,9 +6,11 @@ _No English version because of my poor vocabulary, sorry._
 
 学习建设一个基于`Flask`的轻论坛的过程。
 
-主要参考的是[新版The Flask Mega-Tutorial教程](https://github.com/luhuisicnu/The-Flask-Mega-Tutorial-zh)，
-代码~~剽窃~~借鉴了[flaskbb](https://github/com/flaskbb/flaskbb)、[university-bbs](https://github.com/weijiang1994/university-bbs/)代码。
-在此非常感谢他们的付出以让我们得到了参考。
+`MeowCave`是在本人关于社群的一个想法催生（但没有生）的产物。
+
+在写代码的过程中主要参考的是[新版The Flask Mega-Tutorial教程](https://github.com/luhuisicnu/The-Flask-Mega-Tutorial-zh)，
+部分代码或组织结构~~剽窃~~借鉴了[flaskbb](https://github.com/flaskbb/flaskbb)、[university-bbs](https://github.com/weijiang1994/university-bbs/)等项目。
+在此非常感谢他们的成果让我们这些萌新在学习过程中得到了参考。
 
 ### 代码结构
 
@@ -18,7 +20,7 @@ _No English version because of my poor vocabulary, sorry._
 - `/migrations`：数据库的迁移脚本巴拉巴拉
 - `/test_code`：为存放测试用的代码 ~~，但是根本没用上~~
 
-应用内的每一个子项目：
+应用内的每一个子项目（现有的是`auth`以及`user`）：
 
 - `__init__.py`：告诉系统这是一个可以被`import`ed 的库
 - `forms.py`：存放表单
@@ -27,8 +29,8 @@ _No English version because of my poor vocabulary, sorry._
 
 ### 功能与期望
 
-因为主要目的是学习而非搭建完整可用的项目，所以显的相当简陋。
-如果存在问题，还敬请指出。
+因为主要目的是学习而非搭建完整可用的项目，所以显得相当简陋。
+如果存在问题或硬伤，还敬请指出。
 
 目前已经实现的功能：
 
@@ -41,10 +43,13 @@ _No English version because of my poor vocabulary, sorry._
 - [ ] 注册时加入输入邀请码的表单
 - [ ] 邀请码的生成
   - [ ] 增加后台的第一个功能————**邀请码的相关设定**
-- [ ] 用户个人信息的修改
-- [ ] 进一步精简代码以及合理化项目结构
+- [ ] 用户个人信息
+  - [ ] 修改以及改变形式
+  - [ ] 导出
+  - [ ] 删除
+- [ ] 进一步精简代码、增加可读性以及合理化项目组织
 
-长期规划（`MeowCave`的内容）：
+长期规划（主要是`MeowCave`的内容）：
 
 - Markdown的引入
 - 评论系统
