@@ -40,12 +40,16 @@ def create_app():
     # shell环境，主要是数据库环境相关的
     @app.shell_context_processor
     def make_shell_context():
-        return {'db': db, 'User': User}
+        return {
+            'db': db,
+            'User': User,
+            'UserPost' : UserPost
+        }
+    
     
     # 路由
-    # 其他地方的调用会采用函数名
-    # url_for('hello')
-    @app.route('/hello')# index
+    # 其他地方的调用会采用函数名，`url_for('hello')`
+    @app.route('/hello')
     def hello():
         return '<h1>Hello, world.</h1>'
     
@@ -124,6 +128,9 @@ def configure_errorhandlers(app):# 对应的模板未完成
         return render_template('errors/400.html', title='Bad request'), 400
     
     
+    # 401
+    
+    
     @app.errorhandler(404)
     def page_not_found(e):
         # HTTP 404
@@ -142,3 +149,6 @@ def configure_errorhandlers(app):# 对应的模板未完成
         # HTTP 500
         # “我的锅我的锅 ————admin”
         return render_template('errors/500.html', title='Internal server error'), 500
+    
+    
+    # 501

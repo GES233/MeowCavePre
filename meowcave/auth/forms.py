@@ -11,12 +11,11 @@ from wtforms import (
     BooleanField,# 是或不
     PasswordField,
     StringField,# 字符串
-    SubmitField,# 提交键
+    SubmitField# 提交键
 )
 from wtforms.validators import (# 一堆验证器
     DataRequired,
     EqualTo,
-    # Email,
     ValidationError
 )
 

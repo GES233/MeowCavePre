@@ -6,11 +6,14 @@
     提供与用户业务有关的模型与函数。
 """
 # 导入库与模块
-from datetime import datetime
-from werkzeug.security import generate_password_hash, check_password_hash
+from datetime import datetime, timedelta # 设计时间戳、时效性相关
+from werkzeug.security import(
+    generate_password_hash,
+    check_password_hash) # 密码
 from flask_login import UserMixin
 
 from meowcave.extensions import db
+from meowcave.utils.coding import b56encode
 
 
 class User(db.Model, UserMixin):
@@ -20,12 +23,12 @@ class User(db.Model, UserMixin):
         
         承载用户模型的类。
         
-        `UserMixin`是关于用户数据库模型的一个类，
-        其中四个类以及方法是必需的：
+        # 关于`UserMixin`：
+        是关于用户数据库模型的一个类，其中四个类以及方法是必需的：
          - `is_authenticated`：布尔值，表示是否登录
          - `is_active`：布尔值，和「记住我？」有密切联系
          - `is_anonymous`：布尔值，表示是否是申必人（？）
-         - `get_id`：返回用户的id，必须叫做id
+         - `get_id`：返回用户的id，所以User的主键必须叫做id
            (from https://stackoverflow.com/questions/63231163/what-is-the-usermixin-in-flask)
     """
     __tablename__ = 'user'
@@ -43,21 +46,24 @@ class User(db.Model, UserMixin):
     # `passwd`：混淆后的密码（SHA-256）
     passwd = db.Column(db.String(256))
     # `jion_time`：用户填写邀请码提交时的日期
-    jion_time = db.Column(db.DateTime, default=datetime.utcnow())
+    jion_time = db.Column(db.DateTime, default=datetime.utcnow)
     
     # -- 关于帐号权限的设置
-    # 
+    #
     # `user_status`：表示帐号状态的字符串
+    """
     # - normal：正常
     # - deleted：被删除
     # - blocked：被禁用
     # - frozen：被冻结（用户主动）
+    # - newbie：是萌新
+    """
     user_status = db.Column(db.String, default='normal')
     # `is_spectator`：表示该用户是否为旁观者的布尔值
     is_spectator = db.Column(db.Boolean, default=False)
     # `credit`：等级积分
     # 00000~65535(0000~FFFF)
-    # credit = db.Column(db.Integer, default=32768)
+    credit = db.Column(db.Integer, default=32768)
     
     # -- 用户信息
     # 
@@ -72,7 +78,8 @@ class User(db.Model, UserMixin):
     
     
     # -- 和别的表的关系
-    '''# 邀请码表
+    
+    # 邀请码表
     """
         先声明下关系，一个用户只能被一个邀请码所邀请，
         但是一个用户也可以邀请多个用户，也就是说，
@@ -86,14 +93,27 @@ class User(db.Model, UserMixin):
         user.as_host:code => 1:n
         user.as_guest:code => 1:1
     """
-    invitation_code = db.relationship(
+    invitated_users = db.relationship(
         'InvitationCode', # 先把`InvitationCode`库链接过来
-        # 照葫芦画瓢。
-        #primaryjion=(invitation_code.c.host_id == id),
-        #secondaryjion=(invitation_code.c.guest_id == id),
-        #backref='user',
-        #lazy='dymanic'
-    )'''
+        foreign_keys='InvitationCode.host_id',
+        backref='user_as_host',
+        lazy='select'
+    )
+    
+    user_invited = db.relationship(
+        'InvitationCode',
+        foreign_keys='InvitationCode.guest_id',
+        backref='user_as_guest',
+        lazy='select',
+        uselist=False
+    )
+    
+    # 动态表
+    post = db.relationship(
+        'UserPost',
+        backref='poster',
+        lazy='dynamic'
+    )
     
     
     # 方法
@@ -115,23 +135,62 @@ class User(db.Model, UserMixin):
     def passwd_check(self, password):
         # 返回布尔值
         return check_password_hash(self.passwd, password)
+    '''
+    
+    # 获取上流：
+    def upstream_fetch(self):
+        # (user.as_guest) => (user.as_host)
+        pass
+    
+    
+    # 获取下流：
+    def downstream_fetch(self):
+        # (user.as_host) => [(user.as_guest)]
+        pass'''
 
-'''
+
+
+class UserPost(db.Model):
+    """
+        用户的动态。
+        --------
+        
+        呈现用户的动态。
+    """
+    __tablename__ = 'user_post'
+    
+    # `id`：用户动态的id
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    # `owner_id`：po主的id
+    owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    # `content`：内容
+    content = db.Column(db.Text(100))
+    # `create_time`：发布的时间戳
+    create_time = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    # 方法：
+    def __repr__(self):
+        return '<Post{} from {}>'.format(self.id, self.owner_id)
+
+
+
 class InvitationCode(db.Model):
     """
        InvitationCode
        --------
        
-       存储以及显示邀请码以及基于邀请而建立的联系的数据库。
+       存储邀请码以及基于邀请而建立的用户联系的数据库。
+       两件事：
+        - 完成新用户的注册
+        - 实行「连坐制」
     """
     __tablename__ = 'invitation_code'
     
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     # `code`：邀请码文本
-    code = db.Column(db.String(40),  primary_key=True, unique=True)
+    code = db.Column(db.String(40),  unique=True)
     
-    # -- 关于邀请者以及基本信息
-    # 邀请人
-    host = db.relationship('User')
+    # -- 关于邀请者
     # 邀请人的id
     host_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     # `rest_step`：剩余次数，0就是无效
@@ -140,36 +199,43 @@ class InvitationCode(db.Model):
     # -- 时间与有效相关
     # `generate_time`：生成时间
     generate_time = db.Column(db.DateTime, default=datetime.utcnow())
-    # `end_time`：作废日期
-    invalid_time = db.Coulmn(db.DateTime)
+    # `invalid_time`：作废日期
+    # earlier time of (新用户注册时间, 失效时间)
+    invalid_time = db.Column(db.DateTime)
     
     # -- 关于受邀者
-    # 受邀者
-    guest = db.relationship('User')
-    # 受邀者的id（如果有的话）
     guest_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
     
     
     # 一些函数以及方法
     # 返回值：
     def __repr__(self):
-        if self.guest:
-            return '<Code:"{}", {} -> {}>'.format(code, self.host_id, self.guest_id)
+        if self.guest_id:
+            return '<Code:"{}", {} -> {}>'.format(self.code, self.host_id, self.guest_id)
         else:
-            return '<Code:"{}", {} -> Null>'.format(code, self.host_id)
+            return '<Code:"{}", {} -> Null>'.format(self.code, self.host_id)
     
     
     # 生成邀请码：
-    def generate(self):
-        pass
+    def generate_param(self, days=7):
+        self.code = ''# 可能会引入一堆参数与函数
+        self.invalid_time = self.generate_time + timedelta(days=days)
+    
+    
+    # 查看有效
+    def check_valid(self):
+        # 看时间
+        current_time = datetime.utcnow()
+        return self.invalid_time > current_time
     
     
     # 邀请用户：
-    def guest_invited(self):
-        pass
+    def guest_invited(self, uid):
+        if self.check_valid:
+            self.guest_id = uid
+            self.code_invalid()
     
     
     # 邀请码作废：
     def code_invalid(self):
-        pass
-'''
+        self.invalid_time = min(datetime.utcnow(), self.invalid_time)
