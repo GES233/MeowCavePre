@@ -38,7 +38,7 @@ class UserIndex(View):
     
     def dispatch_request(self, id):
         user = User.query.filter_by(id=id).first_or_404()
-        content = UserPost.query.filter_by(owner_id=id)
+        content = UserPost.query.filter_by(owner_id=id).order_by(UserPost.create_time.desc())
     
         form = None
     
@@ -46,8 +46,9 @@ class UserIndex(View):
             form = UserPostForm()
             if request.method == 'POST':
                 if form.validate_on_submit():
-                    post = UserPost(content=form.post.data, owner_id=current_user.id)
-                    # https://stackoverflow.com/questions/29888698/sqlalchemy-exc-interfaceerror-unprintable-interfaceerror-object
+                    post = UserPost(
+                        content=form.post.data, owner_id=current_user.id)
+                        # https://stackoverflow.com/questions/29888698/sqlalchemy-exc-interfaceerror-unprintable-interfaceerror-object
                     db.session.add(post)
                     db.session.commit()
                     flash('看看是谁，又发了个贴子！')
