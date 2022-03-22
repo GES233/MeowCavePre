@@ -6,6 +6,7 @@
     应用工厂与初始化配置。
 """
 import os
+import click
 
 from flask import(
     Flask,
@@ -35,6 +36,7 @@ def create_app():
     configure_extensions(app)
     configure_errorhandlers(app)
     configure_blueprint(app, blueprint_index=bp_index)
+    register_click_commands(app)
     
     
     # shell环境，主要是数据库环境相关的
@@ -153,3 +155,23 @@ def configure_errorhandlers(app):# 对应的模板未完成
     
     
     # 501
+
+
+def register_click_commands(app):
+    
+    # 初始化数据库
+    @app.cli.command()
+    @click.option('--drop', is_flag=True, help='删 库 跑 路')
+    def initdb(drop):
+        """改过自新，重新开始，删库部署"""
+        if drop:
+            click.secho('真的会删库的哦～')
+            click.confirm('[首次确认]', abort=True)
+            click.secho('真的会删库的哦，不是开玩笑哒', fg='yellow')
+            click.confirm('[再次确认]', abort=True)
+            click.secho('真的会删库的。请您一定要慎重哦～', fg='red')
+            click.confirm('[最后确认]', abort=True)
+            db.drop_all()
+            click.secho('你的数据库被删掉了...', fg='red')
+        db.create_all()
+        click.secho('已初始化数据库', fg='green')
