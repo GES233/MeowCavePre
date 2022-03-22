@@ -13,11 +13,8 @@
     <hr>
     <h2>动态</h2>
     {% if content_list %}
-    {% for element in content_list %}
-        <div>
-            <p><b>{{user.nickname}}</b> 于 {{element.create_time}}：</p>
-            <p>{{element.content}}</p>
-        </div>
+    {% for post in content_list %}
+        {% include '_post.html' %}
     {% endfor %}
     {% endif %}
     {% if current_user.id == user.id %}
