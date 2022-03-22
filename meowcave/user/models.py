@@ -18,7 +18,7 @@ from meowcave.utils.coding import b56encode
 
 class User(db.Model, UserMixin):
     """
-        Uder
+        User
         --------
         
         承载用户模型的类。
