@@ -115,6 +115,12 @@ class User(db.Model, UserMixin):
         lazy='dynamic'
     )
     
+    # 评论表
+    comments = db.relationship(
+        'Comments',
+        backref='poster',
+        lazy='dynamic'
+    )
     
     # 方法
     # 返回值：
@@ -167,6 +173,10 @@ class UserPost(db.Model):
     content = db.Column(db.Text(100))
     # `create_time`：发布的时间戳
     create_time = db.Column(db.DateTime, default=datetime.utcnow())
+    
+    # 和其他表的联系
+    comments = db.relationship('Comments', backref='at_post', lazy='dynamic')
+    
     
     # 方法：
     def __repr__(self):
