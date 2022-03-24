@@ -89,11 +89,12 @@ class RegisterForm(FlaskForm):
         if not email_addr_valid(string=email.data):
             raise ValidationError('话说，你写的是邮件地址码？')
     
-    
     # 验证邀请码
     '''def validate_invitation_code(self, ivcode):
         # 不是从User导入的了，需要一个新表以及一堆新的逻辑。
-        pass
+        code = InvitationCode.query.filter_by().first
+        if not code:
+            raise ValidationError('邀请码错了！不要以为自己瞎掰一个就可以蒙混过关，哼～')
     '''
 
 

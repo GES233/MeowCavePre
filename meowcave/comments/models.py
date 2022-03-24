@@ -63,7 +63,7 @@ class Comments(db.Model):
     # 方法与函数
     def __repr__(self):
         if self.status != 'delete':
-            if parent_comment_id:
+            if self.parent_comment_id:
                 return '<Comment {}: -> comment {}>'.format(self.id, self.parent_comment_id)
-            elif parent_user_post_id:
+            elif self.parent_user_post_id:
                 return '<Comment {}: -> userpost {}>'.format(self.id, self.parent_user_post_id)
