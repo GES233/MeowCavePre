@@ -33,7 +33,7 @@ class CommentsUnderUserPost(MethodView):
     decorators = [login_required]
     
     def fetch_comments(self, all_comments=True):
-        comments = Comments.query.filter_by().all()
+        comments = Comments.query.jion(parent_user_post_id).all()
     
     def get(self):
         pass
