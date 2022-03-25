@@ -59,11 +59,8 @@ class Comments(db.Model):
     """
     parent_user_post_id = db.Column(db.Interger, db.ForeignKey('user_post.id', nullable=True))
     # parent_thread_post_id = db.Column(db.Interger, db.ForeignKey('post.id', nullable=True))
-    # parent_comment_id = db.Coulmn(db.Interger, db.ForeignKey('comment.id', nullable=True))
-    # 相对应的，自我引用
-    # comment_to_comment = db.relationship('Comments', backref='child_commit'， lazy='dynamic')# 这块没绕过弯来说实话
-    comment_lgt = db.Column(db.Integer)
-    comment_rgt = db.Column(db.Integer)
+    comment_lgt = db.Column(db.Integer, default=1)
+    comment_rgt = db.Column(db.Integer, default=2)
     
     
     # 方法与函数
@@ -72,21 +69,30 @@ class Comments(db.Model):
             if self.comment_rgt > 2:
                 return '<Comment {} reply anothor comment>'.format(self.id)
             elif self.comment_rgt == 2: # and parent_thread_id == None
-                return '<Comment {} reply post {}>'.format(slef.id, self.parent_user_post_id)
+                return '<Comment {} reply post {}>'.format(self.id, self.parent_user_post_id)
     
     
     def comment_tree(self, parent_user_post_id):
         """
-           返回一个贴子下所有的评论，以JSON形式返回
+           返回一个贴子下所有的评论，以~~JSON~~id字典的形式返回
         """
         raw_comments_set = self.query.filter(parent_user_post_id=parent_user_post_id).all()
-        init_tree = []
+        init_tree = {'root' : None} # 为了确保只有一个评论的情况下字典能够存在
+        """
+        e.g.
+        只有一个：{'root' : 25}
+        很多个：{root' : {25 : [37, 49, 52], 39 : None}}
+        """
         index = 1
         
-        # ...
-        
-        pass
-    
+        """
+        检索方式：
+        - 查看index是在右边还是在左边，
+          - 左边就再加一个子节点；
+          - 右边就结束添加字节点，把添加的权限给父节点，
+            - 如果没有父节点就返回。
+        - index += 1。
+        """
     
     def comment_update(self, parent_node_id=None):
         # 可能需要把CURD包装下
@@ -102,13 +108,13 @@ class Comments(db.Model):
                     parent_user_post_id=parent_user_post_id,
                     self.comment_rgt.__lt__(parent_rgt) # 刚好排除了parent node
                 )
-            ).update({'comment_rgt' : self.comment_rgt + 2})
+            ).update({'comment_rgt' : self.comment_rgt + 2}, synchronize_session=False)
             self.query.filter(
                 and_(
                     parent_user_post_id=parent_user_post_id,
                     self.comment_lgt.__lt__(parent_rgt)
                 )
-            ).update({'comment_lgt' : self.comment_lgt + 2})
+            ).update({'comment_lgt' : self.comment_lgt + 2}, synchronize_session=False)
             '''
             leftleftside_comments = self.query.filter(
                 and_(
