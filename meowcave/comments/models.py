@@ -6,6 +6,7 @@
     提供与评论有关的模型与函数。
 """
 # 导入库与模块
+import json
 from datetime import datetime # 时间戳
 
 from meowcave.extensions import db
@@ -76,7 +77,7 @@ class Comments(db.Model):
     
     def comment_tree(self, parent_user_post_id):
         """
-           返回一个贴子下所有的评论
+           返回一个贴子下所有的评论，以JSON形式返回
         """
         raw_comments_set = self.query.filter(parent_user_post_id=parent_user_post_id).all()
         init_tree = []
@@ -88,16 +89,40 @@ class Comments(db.Model):
     
     
     def comment_update(self, parent_node_id=None):
+        # 可能需要把CURD包装下
         if not parent_node_id: # 回复post而非评论
             self.comment_lgt = 1
             self.comment_rgt = 2
         else:
-            update_comments_set = self.query.filter(
-                and_(parent_user_post_id=parent_user_post_id,
-                    or_(comment_lgt > parent_node_id, comment_rgt > parent_node_id) # 两次查询如果有重叠怎么办？
+            # 获取 parent node 的右侧值
+            parent = self.query.filter_by(id=parent_node_id)
+            parent_rgt = parent.comment_rgt
+            self.query.filter(
+                and_(
+                    parent_user_post_id=parent_user_post_id,
+                    self.comment_rgt.__lt__(parent_rgt) # 刚好排除了parent node
+                )
+            ).update({'comment_rgt' : self.comment_rgt + 2})
+            self.query.filter(
+                and_(
+                    parent_user_post_id=parent_user_post_id,
+                    self.comment_lgt.__lt__(parent_rgt)
+                )
+            ).update({'comment_lgt' : self.comment_lgt + 2})
+            '''
+            leftleftside_comments = self.query.filter(
+                and_(
+                    parent_user_post_id=parent_user_post_id,
+                    self.comment_rgt.__lt__(parent_rgt) # 刚好排除了parent node
                 )
             ).all()
+            for right_or_root_node in leftleftside_comments:
+                if right_or_root_node.comment_lgt > parent_node_id:
+                    self.query.filter_by(id=right_or_root_node.id).update({'comment_rgt' : right_or_root_node.comment_lgt + 2})
+                self.query.filter_by(id=right_or_root_node.id).update({'comment_lgt' : right_or_root_node.comment_rgt + 2})
+            '''
             
-            # ...
+            self.query.filter_by(id=parent.id).update({'comment_rgt' : parent_rgt + 2})
             
-            pass
+            self.comment_lgt = parent_rgt
+            self.comment_rgt = parent_rgt + 1
