@@ -25,7 +25,7 @@ class Comments(db.Model):
     # `author_id`：就是作者的id，「评论者」
     author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     # `create_time`：建立时间，在此就是「评论时间」
-    create_time = db.Coulmn(db.DateTime, default=datetime.utcnow())
+    create_time = db.Column(db.DateTime, default=datetime.utcnow())
     # `content`：内容
     content = db.Column(db.Text)
     # `status`：状态
@@ -44,26 +44,60 @@ class Comments(db.Model):
     - (Post)
     ==>
     +---------+-----------+------------+-----------+
-    | post-id | thread-id | comment-id | situation |
+    | post-id | thread-id | comment-id |  location |
     +---------+-----------+------------+-----------+
-    |   Null  |    Null   |  not Null  |  comments |
+    |   Null  |    Null   |     > 2    |  comments |
     +---------+-----------+------------+-----------+
-    | not Null|    Null   |    Null    |  UserPost |
+    | not Null|    Null   |    1, 2    |  UserPost |
     +---------+-----------+------------+-----------+
-    |   Null  |  not Null |    Null    |   Thread  |
+    |   Null  |  not Null |    1, 2    |   Thread  |
     +---------+-----------+------------+-----------+
+    
+    ----
+    为了便于检索打算采用前序排序（不是计算机专业学生，没学过数据结构，见谅）
     """
-    parent_user_post_id = db.Coulmn(db.Interger, db.ForeignKey('user_post.id', nullable=True))
-    # parent_thtread_post_id = db.Coulmn(db.Interger, db.ForeignKey('post.id', nullable=True))
-    parent_comment_id = db.Coulmn(db.Interger, db.ForeignKey('comment.id', nullable=True))
+    parent_user_post_id = db.Column(db.Interger, db.ForeignKey('user_post.id', nullable=True))
+    # parent_thread_post_id = db.Column(db.Interger, db.ForeignKey('post.id', nullable=True))
+    # parent_comment_id = db.Coulmn(db.Interger, db.ForeignKey('comment.id', nullable=True))
     # 相对应的，自我引用
-    comment_to_comment = db.relationship('Comments', backref='child_commit'， lazy='dynamic')# 这块没绕过弯来说实话
+    # comment_to_comment = db.relationship('Comments', backref='child_commit'， lazy='dynamic')# 这块没绕过弯来说实话
+    comment_lgt = db.Column(db.Integer)
+    comment_rgt = db.Column(db.Integer)
     
     
     # 方法与函数
     def __repr__(self):
         if self.status != 'delete':
-            if self.parent_comment_id:
-                return '<Comment {}: -> comment {}>'.format(self.id, self.parent_comment_id)
-            elif self.parent_user_post_id:
-                return '<Comment {}: -> userpost {}>'.format(self.id, self.parent_user_post_id)
+            if self.comment_rgt > 2:
+                return '<Comment {} reply anothor comment>'.format(self.id)
+            elif self.comment_rgt == 2: # and parent_thread_id == None
+                return '<Comment {} reply post {}>'.format(slef.id, self.parent_user_post_id)
+    
+    
+    def comment_tree(self, parent_user_post_id):
+        """
+           返回一个贴子下所有的评论
+        """
+        raw_comments_set = self.query.filter(parent_user_post_id=parent_user_post_id).all()
+        init_tree = []
+        index = 1
+        
+        # ...
+        
+        pass
+    
+    
+    def comment_update(self, parent_node_id=None):
+        if not parent_node_id: # 回复post而非评论
+            self.comment_lgt = 1
+            self.comment_rgt = 2
+        else:
+            update_comments_set = self.query.filter(
+                and_(parent_user_post_id=parent_user_post_id,
+                    or_(comment_lgt > parent_node_id, comment_rgt > parent_node_id) # 两次查询如果有重叠怎么办？
+                )
+            ).all()
+            
+            # ...
+            
+            pass
