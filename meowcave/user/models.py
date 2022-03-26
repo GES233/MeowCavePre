@@ -6,7 +6,7 @@
     提供与用户业务有关的模型与函数。
 """
 # 导入库与模块
-from datetime import datetime, timedelta # 设计时间戳、时效性相关
+from datetime import datetime, timedelta # 时间戳、时效性相关
 from werkzeug.security import(
     generate_password_hash,
     check_password_hash) # 密码
@@ -68,7 +68,7 @@ class User(db.Model, UserMixin):
     # -- 用户信息
     # 
     # `birth`：出生日期
-    birth = db.Column(db.DateTime, default=None)
+    birth = db.Column(db.Date, default=None)
     # `gender`：性别
     gender = db.Column(db.String(2), default=None)
     # `info`：用户介绍自己的内容
