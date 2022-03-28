@@ -20,7 +20,10 @@ from wtforms.validators import (# 一堆验证器
 )
 
 from meowcave.utils.match import email_addr_valid
-from meowcave.user.models import User
+from meowcave.user.models import(
+    User,
+    InvitationCode
+)
 
 class LoginForm(FlaskForm):
     """
@@ -46,10 +49,10 @@ class RegisterForm(FlaskForm):
         '昵称',
         validators=[DataRequired(message='我总得知道怎么称呼您吧？')]
     )
-    '''invitation_code = StringField(
-        '邀请码'
-        vadidators=[DataRequired('请输入邀请码')]
-    ）'''
+    invitation_code = StringField(
+        '邀请码',
+        validators=[DataRequired(message='请输入邀请码')]
+    )
     email = StringField(
         '邮件地址',
         validators=[
@@ -90,12 +93,12 @@ class RegisterForm(FlaskForm):
             raise ValidationError('话说，你写的是邮件地址码？')
     
     # 验证邀请码
-    '''def validate_invitation_code(self, ivcode):
+    def validate_invitation_code(self, _ivcode):
         # 不是从User导入的了，需要一个新表以及一堆新的逻辑。
-        code = InvitationCode.query.filter_by().first
-        if not code:
-            raise ValidationError('邀请码错了！不要以为自己瞎掰一个就可以蒙混过关，哼～')
-    '''
+        i_code = InvitationCode.query.filter_by(code=_ivcode)# 不要加`.first()`！
+        if i_code is None:
+            raise ValidationError('') # IDK，有用吗？
+    
 
 
 class ForgotPasswordForm(FlaskForm):

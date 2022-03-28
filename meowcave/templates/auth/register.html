@@ -12,6 +12,13 @@
             {% endfor %}
         </p>
         <p>
+            {{ reg_form.invitation_code.label }}<br>
+            {{ reg_form.invitation_code(size=32) }}<br>
+            {% for error in reg_form.invitation_code.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>
             {{ reg_form.email.label }}<br>
             {{ reg_form.email(size=32) }}<br>
             {% for error in reg_form.email.errors %}
