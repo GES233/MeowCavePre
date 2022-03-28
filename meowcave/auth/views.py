@@ -23,7 +23,10 @@ from flask_login import(
 )
 from meowcave.utils.match import email_addr_valid, ascii_letter_valid
 from meowcave.extensions import login_manager, db
-from meowcave.user.models import User
+from meowcave.user.models import(
+    User,
+    InvitationCode
+)
 from meowcave.auth.forms import(
     LoginForm, 
     RegisterForm
@@ -152,6 +155,7 @@ class Register(MethodView):
         _nickname = reg_form.nickname.data
         pwsd = reg_form.passwd.data
         email = reg_form.email.data
+        _ivcode = reg_form.invitation_code.data
         
         
         if reg_form.validate_on_submit():
@@ -161,26 +165,36 @@ class Register(MethodView):
             照例说一波逻辑：
             1. 检查邀请码是否有效
             2. 确认邮箱是有效的（forms.py）
-            3. 确定昵称是否与别人的昵称以及username重复（form.py）
-            4. 确认密码是有被用户记住的（form.py）
+            3. 确定昵称是否与别人的昵称以及username重复（forms.py）
+            4. 确认密码是有被用户记住的（forms.py）
             5. 载入数据
             """
-            user = User(
-                nickname = _nickname,
-                email = email
-            )
-            user.passwd_set(pwsd)
-            db.session.add(user)
-            db.session.commit()
-            flash('恭喜您！成为了我们的一员')
-            # 接下来是登录逻辑
-            # 理论上来讲，可以选择自动跳转，但是我不会
-            '''
-            # 还要考虑「记住我」的问题，就先算了
-            flash('如果不是自己的电脑记得使用结束后登出！')
-            return redirect(url_for('index'))
-            '''
-            return redirect(url_for('auth.login'))
+            ivcode = InvitationCode.query.filter_by(code=_ivcode).first()
+            if ivcode is not None:
+                user = User(
+                    nickname = _nickname,
+                    email = email
+                )
+                user.passwd_set(pwsd)
+                db.session.add(user)
+                db.session.commit()
+                # 在更新数据库以获得uid
+                user = User.query.filer_by(email=email).first()# Same user.
+                ivcode.guest_invited(uid=user.id)
+                db.session.update(ivcode)
+                db.session.commit()
+                flash('恭喜您！成为了我们的一员')
+                # 接下来是登录逻辑
+                # 理论上来讲，可以选择自动跳转，但是我不会
+                '''
+                # 还要考虑「记住我」的问题，就先算了
+                flash('如果不是自己的电脑记得使用结束后登出！')
+                return redirect(url_for('index'))
+                '''
+                return redirect(url_for('auth.login'))
+            else:
+                flash('邀请码错了！不要以为自己瞎掰一个就可以蒙混过关，哼～')
+                return redirect(url_for('auth.register'))
         
         return render_template("auth/register.html", reg_form=reg_form)
 
@@ -189,6 +203,7 @@ def load_blueprint(app):
     # 向蓝图注册
     auth = Blueprint('auth', __name__)
     
+    # auth.add_url_rule('/invite', view_func=Login.as_view('fetch_code'))
     auth.add_url_rule('/login', view_func=Login.as_view('login'))
     auth.add_url_rule('/logout', view_func=Logout.as_view('log_out'))
     auth.add_url_rule('/register', view_func=Register.as_view('register'))
