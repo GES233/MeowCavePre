@@ -234,9 +234,11 @@ class InvitationCode(db.Model):
     
     # 查看有效
     def check_valid(self):
-        # 看时间
-        current_time = datetime.utcnow()
-        return self.invalid_time > current_time
+        if self.rest_step != 0:# 看时间
+            current_time = datetime.utcnow()
+            return self.invalid_time > current_time
+        else:
+            return False
     
     
     # 邀请用户：
@@ -249,3 +251,4 @@ class InvitationCode(db.Model):
     # 邀请码作废：
     def code_invalid(self):
         self.invalid_time = min(datetime.utcnow(), self.invalid_time)
+        self.rest_step = 0

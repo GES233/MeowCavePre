@@ -11,6 +11,56 @@ from datetime import datetime # 涉及时间戳
 from meowcave.extensions import db
 
 
+attendgroups = db.Table(
+    'attendgroups',
+    db.Column(
+        'member_id',
+        db.Integer(),
+        db.ForeignKey('user.id', ondelete="CASCADE"),
+        nullable=False
+    ),
+    db.Column(
+        'group_id',
+        db.Integer(),
+        db.ForeignKey('group.id', ondelete="CASCADE"),
+        nullable=False
+    )
+)
+
+
+
+class Group(db.Model):
+    """
+        Group
+        --------
+        
+        圈子，其实叫`Community`也没差，但是更多的还是小圈子。
+    """
+    __tablename__ = 'group'
+    
+    # `id`
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    # `create_time`
+    create_time = db.Column(db.DateTime, default=datetime.utcnow())
+    # `group_name`：可以通过`/gruop/<group_name>`来查找
+    group_name = db.Column(db.String(30), default=None)
+    # `title`
+    title = db.Column(db.String(255), nullable=False)
+    # `locked`：内容对外人开放？
+    locked = db.Column(db.Boolean, default=False, nullable=False)
+    # `visible`：圈子可见？
+    visible = db.Column(db.Boolean, default=False, nullable=False)
+    
+    # 和其他表的关系
+    members = db.relationship(
+        """
+            many-to-many
+        """
+        'User',
+        secondary=attendgroups
+    )
+
+
 class PostThread(db.Model):
     """
         PostThread
