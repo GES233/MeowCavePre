@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>邀请</h1>
+    {% if code_list %}
+    <table border="1">
+        <tr>
+            <th>邀请码</th>
+            <th>剩余次数</th>
+            <th>生成时间</th>
+            <th>作废时间</th>
+            <th>受邀者的ID</th>
+        </tr>
+        {% for code in code_list %}
+            <tr>
+                <th>{{ code.code }}</th>
+                <th>{{ code.rest_step }}</th>
+                <th>{{ code.generate_time }}</th>
+                <th>{{ code.invalid_time }}</th>
+                <th>
+                    {% if code.guest_id %}
+                    {{ code.guest_id }}
+                    {% else %}
+                    None
+                    {% endif %}
+                </th>
+            </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p>没有邀请码</p>
+    {% endif %}
+{% endblock %}
