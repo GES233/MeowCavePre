@@ -27,7 +27,7 @@ def upgrade():
     sa.Column('jion_time', sa.DateTime(), nullable=True),
     sa.Column('user_status', sa.String(), nullable=True),
     sa.Column('is_spectator', sa.Boolean(), nullable=True),
-    sa.Column('birth', sa.DateTime(), nullable=True),
+    sa.Column('birth', sa.Date(), nullable=True),
     sa.Column('gender', sa.String(length=2), nullable=True),
     sa.Column('info', sa.Text(length=1024), nullable=True),
     sa.Column('website', sa.String(length=1256), nullable=True),
