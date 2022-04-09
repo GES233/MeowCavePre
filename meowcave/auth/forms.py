@@ -2,25 +2,25 @@
 """
     meowcave/auth/forms.py
     ---------------
-    
+
     认证相关表单的提交。
 """
 # 导入相关的库
 from flask_wtf import FlaskForm
 from wtforms import (
-    BooleanField,# 是或不
+    BooleanField,  # 是或不
     PasswordField,
-    StringField,# 字符串
-    SubmitField# 提交键
+    StringField,  # 字符串
+    SubmitField  # 提交键
 )
-from wtforms.validators import (# 一堆验证器
+from wtforms.validators import (  # 一堆验证器
     DataRequired,
     EqualTo,
     ValidationError
 )
 
 from meowcave.utils.match import email_addr_valid
-from meowcave.user.models import(
+from meowcave.user.models import (
     User,
     InvitationCode
 )
@@ -72,18 +72,18 @@ class RegisterForm(FlaskForm):
         ]
     )
     submit = SubmitField('加入MeowCave！')
-    
-    
+
     # 给这玩意整点小函数，是WTForm的自定义项
-    
+
     # 验证昵称
+
     def validate_nickname(self, nickname):
         # 昵称不能与别人的昵称重名，也不允许和别人的用户名重名
         user1 = User.query.filter_by(nickname=nickname.data).first()
         user2 = User.query.filter_by(username=nickname.data).first()
-        if user1 is not None or user2 is not None: # 有结果， i.e. 重名了
-            raise ValidationError('这个名字已经被别人占有了。') # 此处该有颜文字（？）
-    
+        if user1 is not None or user2 is not None:  # 有结果， i.e. 重名了
+            raise ValidationError('这个名字已经被别人占有了。')  # 此处该有颜文字（？）
+
     # 验证邮件
     def validate_email(self, email):
         user = User.query.filter_by(email=email.data).first()
@@ -91,14 +91,13 @@ class RegisterForm(FlaskForm):
             raise ValidationError('电邮地址重名了。')
         if not email_addr_valid(string=email.data):
             raise ValidationError('话说，你写的是邮件地址码？')
-    
+
     # 验证邀请码
     def validate_invitation_code(self, _ivcode):
         # 不是从User导入的了，需要一个新表以及一堆新的逻辑。
-        i_code = InvitationCode.query.filter_by(code=_ivcode)# 不要加`.first()`！
+        i_code = InvitationCode.query.filter_by(code=_ivcode)  # 不要加`.first()`！
         if i_code is None:
-            raise ValidationError('') # IDK，有用吗？
-    
+            raise ValidationError('')  # IDK，有用吗？
 
 
 class ForgotPasswordForm(FlaskForm):
