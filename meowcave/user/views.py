@@ -2,7 +2,7 @@
 """
     meowcave/user/views.py
     ---------------
-    
+
     提供用户相关的视图（主要是方法视图）。
 """
 # 导入库与模块
@@ -14,8 +14,8 @@ from flask import (
     render_template,
     flash
 )
-from flask.views import View, MethodView
-from flask_login import(
+from flask.views import View  # , MethodView
+from flask_login import (
     login_user,
     logout_user,
     login_required,
@@ -23,7 +23,7 @@ from flask_login import(
 )
 
 from meowcave.extensions import db
-from meowcave.user.models import(
+from meowcave.user.models import (
     UserPost,
     User
 )
@@ -35,13 +35,15 @@ class UserIndex(View):
         用户主页
     """
     methods = ['GET', 'POST']
-    
+
     def dispatch_request(self, id):
         user = User.query.filter_by(id=id).first_or_404()
-        content = UserPost.query.filter_by(owner_id=id).order_by(UserPost.create_time.desc())
-    
+        content = UserPost.query.filter_by(
+            owner_id=id).order_by(
+            UserPost.create_time.desc())
+
         form = None
-    
+
         if current_user:
             form = UserPostForm()
             if request.method == 'POST':
@@ -61,8 +63,9 @@ class UserIndex(View):
 def load_blueprint(app):
     # 向蓝图注册
     user = Blueprint('user', __name__)
-    
-    user.add_url_rule('/user/<id>', view_func=UserIndex.as_view('shown'))# 'user.shown'
+
+    user.add_url_rule('/user/<id>', view_func=UserIndex.as_view('shown'))
+    # 'user.shown'
     # user.all_url_rule('/people/<username>', end_point='username_page')
 
     app.register_blueprint(user)

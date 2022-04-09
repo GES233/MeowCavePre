@@ -2,26 +2,26 @@
 """
     meowcave/user/forms.py
     ---------------
-    
+
     用户相关表单的提交。
 """
 # 导入相关的库
 from flask_wtf import FlaskForm
 from wtforms import (
-    TextAreaField, # 写个小作文
-    BooleanField,
+    TextAreaField,  # 写个小作文
+    # BooleanField,
     StringField,
     SubmitField
 )
 from wtforms.validators import DataRequired, Length
 
-from meowcave.user.models import User, UserPost
+# from meowcave.user.models import User, UserPost
 
 class UserPostForm(FlaskForm):
     """
         用户动态上传。
         --------
-        
+
         写点啥
     """
     post = TextAreaField(

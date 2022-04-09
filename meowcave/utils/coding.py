@@ -2,15 +2,15 @@
 """
     meowcave/utils/coding.py
     ---------------
-    
+
     编码相关。
 """
-import os, sys
+# import os, sys
 
 """
     Base56编码
     --------
-    
+
     用于邀请码生成。
 """
 # b56字符
@@ -18,8 +18,8 @@ b56 = '23456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz'
 # 编码(int -> binery)
 def b56encode(i):
     if not i:
-        return b56[0:1]# 从0开始截取一位
-    s= '' # 结果
+        return b56[0:1]  # 从0开始截取一位
+    s = ''  # 结果
     while i:
         i, idx = divmod(i, len(b56))
         s = b56[idx:idx+1] + s
