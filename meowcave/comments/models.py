@@ -1,6 +1,6 @@
 # -*- encoding:utf-8 -*-
 """
-    meowcave/comments/models.py
+    meowcave.comments.models
     ---------------
 
     提供与评论有关的模型与函数。

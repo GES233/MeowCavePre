@@ -1,6 +1,6 @@
 # -*- encoding:utf-8 -*-
 """
-    meowcave/setting/testing.py
+    meowcave.setting.testing
     ----------------
     
     应用在开发与测试阶段的配置。

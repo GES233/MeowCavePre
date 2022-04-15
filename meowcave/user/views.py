@@ -1,6 +1,6 @@
 # -*- encoding:utf-8 -*-
 """
-    meowcave/user/views.py
+    meowcave.user.views
     ---------------
 
     提供用户相关的视图（主要是方法视图）。

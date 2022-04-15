@@ -1,6 +1,6 @@
 # -*- encoding:utf-8 -*-
 """
-    meowcave/comments/forms.py
+    meowcave.comments.forms
     ---------------
     
     评论表单的提交。

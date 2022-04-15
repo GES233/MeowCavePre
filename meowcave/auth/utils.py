@@ -1,6 +1,6 @@
 # -*- encoding:utf-8 -*-
 """
-    meowcave/auth/utils.py
+    meowcave.auth.utils
     ---------------
     
     关于认证的小函数。

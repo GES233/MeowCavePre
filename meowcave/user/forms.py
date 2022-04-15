@@ -1,6 +1,6 @@
 # -*- encoding:utf-8 -*-
 """
-    meowcave/user/forms.py
+    meowcave.user.forms
     ---------------
 
     用户相关表单的提交。

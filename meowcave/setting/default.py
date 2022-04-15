@@ -1,6 +1,6 @@
 # -*- encoding:utf-8 -*-
 """
-    meowcave/setting/default.py
+    meowcave.setting.default
     ----------------
 
     关于应用的配置。

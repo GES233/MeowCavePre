@@ -1,6 +1,6 @@
 # -*- encoding:utf-8 -*-
 """
-    /mewocave/utils/match.py
+    mewocave.utils.match
     --------
 
     返回匹配字符串的结果

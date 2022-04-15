@@ -1,6 +1,6 @@
 # -*- encoding:utf-8 -*-
 """
-    meowcave/user/models.py
+    meowcave.user.models
     ---------------
 
     提供与用户业务有关的模型与函数。
@@ -183,13 +183,14 @@ class UserPost(db.Model):
 
 class InvitationCode(db.Model):
     """
-       InvitationCode
-       --------
+        InvitationCode
+        --------
 
-       存储邀请码以及基于邀请而建立的用户联系的数据库。
-       两件事：
+        存储邀请码以及基于邀请而建立的用户联系的数据库。
+        两件事：
         - 完成新用户的注册
         - 实行「连坐制」
+        “可能”需要异步操作等...
     """
     __tablename__ = 'invitation_code'
 

@@ -1,6 +1,6 @@
 # -*- encoding:utf-8 -*-
 """
-    meowcave/forum/models.py
+    meowcave.forum.models
     ---------------
     
     圈子、讨论串以及贴子的模型与函数。

@@ -1,6 +1,6 @@
 # -*- encoding:utf-8 -*-
 """
-    meowcave/auth/views.py
+    meowcave.auth.views
     ---------------
 
     提供认证相关的视图（主要是方法视图）。

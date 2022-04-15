@@ -1,6 +1,6 @@
 # -*- encoding:utf-8 -*-
 """
-    meowcave/comments/views.py
+    meowcave.comments.views
     ---------------
     
     提供评论相关的视图（本来打算不用类视图写一个的，但是保持代码的一致性还是继续吧）。

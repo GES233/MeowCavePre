@@ -1,6 +1,6 @@
 # -*- encoding:utf-8 -*-
 """
-    meowcave/auth/forms.py
+    meowcave.auth.forms
     ---------------
 
     认证相关表单的提交。

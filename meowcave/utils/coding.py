@@ -1,6 +1,6 @@
 # -*- encoding:utf-8 -*-
 """
-    meowcave/utils/coding.py
+    meowcave.utils.coding
     ---------------
 
     编码相关。
