@@ -23,10 +23,7 @@ from flask_login import (
 )
 from meowcave.utils.match import email_addr_valid, ascii_letter_valid
 from meowcave.extensions import db
-from meowcave.user.models import (
-    User,
-    InvitationCode
-)
+from meowcave.user.models import User
 from meowcave.auth.forms import (
     LoginForm,
     RegisterForm
@@ -194,24 +191,11 @@ class Register(MethodView):
         return render_template("auth/register.html", reg_form=reg_form)
 
 
-class InviteTable(View):
-    decorators = [login_required]
-    __methods__ = ['GET', 'POST']
-
-    @login_required
-    def dispatch_request(self):  # Only this.
-        code_list = \
-            InvitationCode.query.filter_by(host_id=current_user.id).all()
-        if request.method == 'GET':
-            return render_template("user/invite.html", code_list=code_list)
-        return render_template("user/invite.html", code_list=code_list)
-
 
 def load_blueprint(app):
     # 向蓝图注册
     auth = Blueprint('auth', __name__)
 
-    auth.add_url_rule('/invite', view_func=InviteTable.as_view('invite_code'))
     auth.add_url_rule('/login', view_func=Login.as_view('login'))
     auth.add_url_rule('/logout', view_func=Logout.as_view('log_out'))
     auth.add_url_rule('/register', view_func=Register.as_view('register'))

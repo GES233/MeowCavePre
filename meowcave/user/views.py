@@ -25,7 +25,8 @@ from flask_login import (
 from meowcave.extensions import db
 from meowcave.user.models import (
     UserPost,
-    User
+    User,
+    InvitationCode
 )
 from meowcave.user.forms import UserPostForm
 
@@ -60,6 +61,22 @@ class UserIndex(View):
                 return render_template("user/user.html", user=user, content_list=content, form=form)
         return render_template("user/user.html", user=user, content_list=content)
 
+
+class InviteTable(View):
+    decorators = [login_required]
+    __methods__ = ['GET', 'POST']
+
+    @login_required
+    def dispatch_request(self):  # Only this.
+        code_list = \
+            InvitationCode.query.filter_by(host_id=current_user.id).all()
+        if request.method == 'GET':  # Fetch InvitationCode.
+            return render_template("user/invite.html", code_list=code_list)
+        elif request.method == 'POST':  # Generate a new Code.
+            pass
+        return render_template("user/invite.html", code_list=code_list)
+
+
 def load_blueprint(app):
     # 向蓝图注册
     user = Blueprint('user', __name__)
@@ -67,5 +84,6 @@ def load_blueprint(app):
     user.add_url_rule('/user/<id>', view_func=UserIndex.as_view('shown'))
     # 'user.shown'
     # user.all_url_rule('/people/<username>', end_point='username_page')
+    auth.add_url_rule('/invite', view_func=InviteTable.as_view('invite_code'))
 
     app.register_blueprint(user)
