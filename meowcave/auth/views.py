@@ -135,12 +135,16 @@ class Register(MethodView):
         return RegisterForm()
 
     def get(self):
-        return render_template("auth/register.html", reg_form=self.form())
-
-    def post(self):
         if current_user.is_authenticated:  # 已经登录的情况
             flash('您已经登录了，因此无需注册')
             return redirect(url_for('index'))
+        else:
+            return render_template("auth/register.html", reg_form=self.form())
+
+    def post(self):
+        '''if current_user.is_authenticated:  # 已经登录的情况
+            flash('您已经登录了，因此无需注册')
+            return redirect(url_for('index'))'''  # 不需要再出现一次了，不是吗？
 
         reg_form = self.form()
 
