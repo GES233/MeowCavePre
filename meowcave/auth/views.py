@@ -23,7 +23,7 @@ from flask_login import (
 )
 from meowcave.utils.match import email_addr_valid, ascii_letter_valid
 from meowcave.extensions import db
-from meowcave.user.models import User
+from meowcave.user.models import User, InvitationCode
 from meowcave.auth.forms import (
     LoginForm,
     RegisterForm

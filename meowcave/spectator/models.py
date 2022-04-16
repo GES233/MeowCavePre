@@ -10,7 +10,7 @@
 from datetime import datetime, timedelta
 
 from meowcave.extensions import db
-from meowcave.auth.utils import *
+from meowcave.user.utils import *
 
 class SensitiveLog(db.Model):
     """

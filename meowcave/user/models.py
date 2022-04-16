@@ -13,7 +13,7 @@ from werkzeug.security import (
 from flask_login import UserMixin
 
 from meowcave.extensions import db
-from meowcave.auth.utils import generator
+from meowcave.user.utils import generator
 
 
 class User(db.Model, UserMixin):
@@ -226,6 +226,7 @@ class InvitationCode(db.Model):
     # 生成邀请码：
     def generate_param(self, days=7):
         self.code = generator(prefix='mCv')  # 可能会引入一堆参数与函数
+        self.generate_time=datetime.utcnow()
         self.invalid_time = self.generate_time + timedelta(days=days)
 
     # 查看有效

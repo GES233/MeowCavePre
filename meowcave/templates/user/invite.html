@@ -30,4 +30,8 @@
     {% else %}
     <p>没有邀请码</p>
     {% endif %}
+    <!--Generate invitation code.-->
+    <p>
+        <a href="{{ url_for('user.generate_code') }}">生成邀请码</a>
+    </p>
 {% endblock %}

@@ -6,6 +6,7 @@
     提供用户相关的视图（主要是方法视图）。
 """
 # 导入库与模块
+from multiprocessing import reduction
 from flask import (
     request,
     redirect,
@@ -14,7 +15,7 @@ from flask import (
     render_template,
     flash
 )
-from flask.views import View  # , MethodView
+from flask.views import View, MethodView
 from flask_login import (
     login_user,
     logout_user,
@@ -72,9 +73,22 @@ class InviteTable(View):
             InvitationCode.query.filter_by(host_id=current_user.id).all()
         if request.method == 'GET':  # Fetch InvitationCode.
             return render_template("user/invite.html", code_list=code_list)
-        elif request.method == 'POST':  # Generate a new Code.
-            pass
+        '''elif request.method == 'POST':  # Generate a new Code.
+            return url_for()'''
         return render_template("user/invite.html", code_list=code_list)
+
+
+class InviteCodeGenerate(MethodView):
+    decorators = [login_required]
+
+    @login_required
+    def dispatch_request(self):
+        new_code = InvitationCode(host_id = current_user.id)
+        new_code.generate_param(days=14)
+        db.session.add(new_code)
+        db.session.commit()
+        flash('Successful!')
+        return redirect('/invite')
 
 
 def load_blueprint(app):
@@ -84,6 +98,7 @@ def load_blueprint(app):
     user.add_url_rule('/user/<id>', view_func=UserIndex.as_view('shown'))
     # 'user.shown'
     # user.all_url_rule('/people/<username>', end_point='username_page')
-    auth.add_url_rule('/invite', view_func=InviteTable.as_view('invite_code'))
+    user.add_url_rule('/invite', view_func=InviteTable.as_view('invite_code'))
+    user.add_url_rule('/now_code', view_func=InviteCodeGenerate.as_view('generate_code'))
 
     app.register_blueprint(user)
