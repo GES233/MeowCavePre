@@ -1,6 +1,6 @@
 # -*- encoding:utf-8 -*-
 """
-    app.py
+    .app
     ----------------
 
     应用工厂与初始化配置。
@@ -15,7 +15,7 @@ from flask import (
 # 导入扩展
 from meowcave.extensions import db, migrate, login_manager
 # 导入模型
-from meowcave.user.models import User
+from meowcave.user.models import User, UserPost
 # 导入蓝图
 from meowcave.blueprint_index import bp_index
 
